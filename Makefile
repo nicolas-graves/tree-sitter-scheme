@@ -97,7 +97,10 @@ generate-scheme:
 generate-guile:
 	$(TS) generate variants/guile/grammar.js -o generated/guile/src
 
-generate-all: generate-scheme generate-guile
+generate-guix:
+	$(TS) generate variants/guix/grammar.js -o generated/guix/src
+
+generate-all: generate-scheme generate-guile generate-guix
 
 test-scheme: generate-scheme
 	sh scripts/test-variant.sh scheme
@@ -105,7 +108,22 @@ test-scheme: generate-scheme
 test-guile: generate-guile
 	sh scripts/test-variant.sh guile
 
-test-all: test-scheme test-guile
+test-guix: generate-guix
+	sh scripts/test-variant.sh guix
+
+test-all: test-scheme test-guile test-guix
+
+test-guix-tree: generate-guix
+	@test -n "$(GUIX_SOURCE)" || { echo 'GUIX_SOURCE is required' >&2; exit 2; }
+	@PATH="$$(dirname "$$(command -v $(TS))"):$$PATH" \
+		sh scripts/test-guix-tree.sh "$(GUIX_SOURCE)"
+
+guix-generate:
+	guix shell -m manifest.scm -- tree-sitter generate
+
+guix-test:
+	guix shell -m manifest.scm -- env CC=gcc tree-sitter test
 
 .PHONY: all install uninstall clean test generate-scheme generate-guile \
-	generate-all test-scheme test-guile test-all
+	generate-guix generate-all test-scheme test-guile test-guix test-all \
+	test-guix-tree guix-generate guix-test

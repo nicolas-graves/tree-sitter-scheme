@@ -1,5 +1,10 @@
 # tree-sitter-scheme
 
+This repository generates three composable C parsers from one grammar factory:
+`scheme` preserves the original grammar, `guile` adds Guile reader syntax, and
+`guix` adds Guix G-expressions. Existing bindings continue to expose Scheme.
+Use `make generate-all` and `make test-all` for all variants.
+
 [![Build/test](https://github.com/6cdh/tree-sitter-scheme/workflows/Build/test/badge.svg)](https://github.com/6cdh/tree-sitter-scheme/actions/workflows/test.yml) [![Crates.io Version](https://img.shields.io/crates/v/tree-sitter-scheme)](https://crates.io/crates/tree-sitter-scheme) [![NPM Version](https://img.shields.io/npm/v/%406cdh%2Ftree-sitter-scheme)](https://www.npmjs.com/package/@6cdh/tree-sitter-scheme)
 
 Scheme parser for tree-sitter.

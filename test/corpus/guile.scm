@@ -68,6 +68,89 @@ directives alongside hash-bang comments
   (directive))
 
 ===
+Guix G-expressions
+===
+
+#~(string-append #$coreutils "/bin/uname")
+#~(list #$@(list coreutils grep) #$grep)
+#~'(one #$two #$@(three four))
+
+---
+(program
+  (gexp
+    (list
+      (symbol)
+      (ungexp
+        (symbol))
+      (string)))
+  (gexp
+    (list
+      (symbol)
+      (ungexp_splicing
+        (list
+          (symbol)
+          (symbol)
+          (symbol)))
+      (ungexp
+        (symbol))))
+  (gexp
+    (quote
+      (list
+        (symbol)
+        (ungexp
+          (symbol))
+        (ungexp_splicing
+          (list
+            (symbol)
+            (symbol)))))))
+
+===
+G-expression intertoken space
+===
+
+#~ ; body follows a comment
+  (list #$ value #$@ (list one two))
+
+---
+(program
+  (gexp
+    (comment)
+    (list
+      (symbol)
+      (ungexp
+        (symbol))
+      (ungexp_splicing
+        (list
+          (symbol)
+          (symbol)
+          (symbol))))))
+
+===
+native G-expression escapes and extended symbols
+===
+
+#~(list #+native #+@(list one two))
+'(#{.}# #{}# #{ mapm %state-monad instance}#)
+
+---
+(program
+  (gexp
+    (list
+      (symbol)
+      (ungexp_native
+        (symbol))
+      (ungexp_native_splicing
+        (list
+          (symbol)
+          (symbol)
+          (symbol)))))
+  (quote
+    (list
+      (symbol)
+      (symbol)
+      (symbol))))
+
+===
 Guile nil and extended bare identifiers
 ===
 
@@ -84,4 +167,3 @@ Guile nil and extended bare identifiers
     (symbol)
     (symbol)
     (symbol)))
-
