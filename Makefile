@@ -88,7 +88,24 @@ uninstall:
 clean:
 	$(RM) $(OBJS) $(LANGUAGE_NAME).pc lib$(LANGUAGE_NAME).a lib$(LANGUAGE_NAME).$(SOEXT)
 
-test:
-	$(TS) test
+test: test-scheme
 
-.PHONY: all install uninstall clean test
+generate-scheme:
+	$(TS) generate variants/scheme/grammar.js -o generated/scheme/src
+	$(TS) generate variants/scheme/grammar.js -o src
+
+generate-guile:
+	$(TS) generate variants/guile/grammar.js -o generated/guile/src
+
+generate-all: generate-scheme generate-guile
+
+test-scheme: generate-scheme
+	sh scripts/test-variant.sh scheme
+
+test-guile: generate-guile
+	sh scripts/test-variant.sh guile
+
+test-all: test-scheme test-guile
+
+.PHONY: all install uninstall clean test generate-scheme generate-guile \
+	generate-all test-scheme test-guile test-all
