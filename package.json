@@ -4,6 +4,13 @@
   "description": "Tree-sitter parser for Scheme",
   "main": "bindings/node",
   "types": "bindings/node",
+  "exports": {
+    ".": "./bindings/node/index.js",
+    "./codegraph": {
+      "types": "./codegraph-plugin.d.ts",
+      "require": "./codegraph-plugin.cjs"
+    }
+  },
   "scripts": {
     "install": "node-gyp-build",
     "prestart": "tree-sitter build --wasm",
@@ -37,5 +44,7 @@
     "src/**",
     "tree-sitter.json",
     "*.wasm"
+    ,"codegraph-plugin.cjs"
+    ,"codegraph-plugin.d.ts"
   ]
 }
