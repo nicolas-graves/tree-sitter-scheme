@@ -42,7 +42,7 @@ Please open an issue to let me know it's really used if you want to add new exte
 * [ ] Support for implementation
   * [ ] Chez Scheme ([#1](https://github.com/6cdh/tree-sitter-scheme/issues/1))
   * [ ] Chicken Scheme ([#3](https://github.com/6cdh/tree-sitter-scheme/issues/3))
-  * [ ] Guile Scheme ([#7](https://github.com/6cdh/tree-sitter-scheme/issues/7))
+  * [x] Guile Scheme ([#7](https://github.com/6cdh/tree-sitter-scheme/issues/7)) — see the `guile`/`guix` variants above
   * [ ] Steel Scheme ([#17](https://github.com/6cdh/tree-sitter-scheme/issues/17))
 
 ## Usage
