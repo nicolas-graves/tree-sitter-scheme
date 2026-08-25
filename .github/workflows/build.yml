@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+permissions:
+  contents: write
 jobs:
   wasm:
     runs-on: ubuntu-latest
@@ -12,8 +14,31 @@ jobs:
         uses: tree-sitter/setup-action/cli@v1
         with:
           tree-sitter-ref: v0.24.7
-      - name: wasm build
-        run: tree-sitter build -w -o tree-sitter-scheme.wasm
+      - name: Build wasm for every grammar variant
+        run: |
+          set -eu
+          # guix before guile: the guile step deletes queries/guix (that
+          # query intentionally references nodes the narrower guile
+          # grammar doesn't have), which would break a later guix build.
+          for variant in scheme guix guile; do
+            rm -f grammar.js
+            cp "variants/$variant/grammar.js" grammar.js
+            sed -i 's#\.\./\.\./grammar/#./grammar/#' grammar.js
+            if [ "$variant" = guile ]; then
+              rm -rf queries/guix
+            fi
+            rm -rf binding.gyp bindings src/grammar.json src/node-types.json src/parser.c src/tree_sitter
+            tree-sitter generate
+            tree-sitter build -w -o "tree-sitter-$variant.wasm"
+          done
+      - name: Publish per-commit wasm release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "wasm-${{ github.sha }}" tree-sitter-*.wasm \
+            --repo "${{ github.repository }}" \
+            --title "wasm build ${{ github.sha }}" \
+            --notes "Automated per-commit wasm build (scheme, guile, guix grammar variants)."
   rust:
     runs-on: ubuntu-latest
     steps:
